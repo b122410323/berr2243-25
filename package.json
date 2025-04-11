@@ -16,8 +16,9 @@
     "url": "https://github.com/b122410323/berr2243-25/issues"
   },
   "homepage": "https://github.com/b122410323/berr2243-25#readme",
-  "description": "",
+  "description": "- readme file\r - added by vscod",
   "dependencies": {
+    "express": "^5.1.0",
     "mongodb": "^6.15.0"
   }
 }
