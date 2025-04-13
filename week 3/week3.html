@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Ride Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #333;
+      color: white;
+    }
+    .form-container {
+      margin-top: 30px;
+      background: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ride Dashboard</h1>
+
+  <table id="rideTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Pickup</th>
+        <th>Destination</th>
+        <th>Driver</th>
+        <th>Status</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="form-container">
+    <h2>Tambah Ride Baru</h2>
+    <input type="text" id="pickup" placeholder="Pickup Location">
+    <input type="text" id="destination" placeholder="Destination">
+    <input type="text" id="driverId" placeholder="Driver ID">
+    <input type="text" id="status" placeholder="Status">
+    <button onclick="addRide()">Hantar</button>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/rides';
+
+    function loadRides() {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#rideTable tbody");
+          tbody.innerHTML = '';
+          data.forEach(ride => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${ride._id || '-'}</td>
+                <td>${ride.pickupLocation}</td>
+                <td>${ride.destination}</td>
+                <td>${ride.driverId}</td>
+                <td>${ride.status}</td>
+                <td><button class="delete-btn" onclick="deleteRide('${ride._id}')">Delete</button></td>
+              </tr>
+            `;
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error loading rides");
+        });
+    }
+
+    function addRide() {
+      const newRide = {
+        pickupLocation: document.getElementById("pickup").value,
+        destination: document.getElementById("destination").value,
+        driverId: document.getElementById("driverId").value,
+        status: document.getElementById("status").value
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newRide)
+      })
+      .then(res => res.json())
+      .then(() => {
+        loadRides();
+        document.getElementById("pickup").value = '';
+        document.getElementById("destination").value = '';
+        document.getElementById("driverId").value = '';
+        document.getElementById("status").value = '';
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Gagal tambah ride");
+      });
+    }
+
+    function deleteRide(id) {
+      fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ status: "cancelled" }) // ikut data dalam Postman
+      })
+      .then(() => loadRides())
+      .catch(err => {
+        console.error(err);
+        alert("Gagal delete");
+      });
+    }
+
+    // Auto load bila buka
+    loadRides();
+  </script>
+
+</body>
+</html>

@@ -8,6 +8,9 @@ const port = 3000; // create port and server
 const app = express();
 app.use(express.json());
 
+const cors = require('cors'); 
+app.use(cors());
+
 let db;
 
 async function connectToMongoDB() {             // line 13 sampai 30 connect to mongoDB
@@ -56,7 +59,7 @@ app.post('/rides', async (req, res) => { // Hnadles POST req to create a new rid
 
 // PATCH /rides/:id - Update ride status
 
-app.put('/rides/:id', async (req, res) => { // Handles PATCH req to update a ride by its ID
+app.patch('/rides/:id', async (req, res) => { // Handles PATCH req to update a ride by its ID
     
     try {
         const result = await db.collection('rides').updateOne(  // looks for a ride with the matching ID & updates the status field
