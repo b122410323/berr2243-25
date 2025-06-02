@@ -18,8 +18,11 @@
   "homepage": "https://github.com/b122410323/berr2243-25#readme",
   "description": "- readme file\r - added by vscod",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mongodb": "^6.15.0"
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.16.0"
   }
 }
